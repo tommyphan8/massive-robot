@@ -4,22 +4,25 @@
   <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
   <div id="player"></div>
 
-  <form>
-    <input type="text" name="link" value="Youtube Link">
-    <input id="submitLink" type="submit" value="Submit">
-  </form>
+  <div id="registration" class="active">
+    <form>
+      <p>Username: </p><input id="name"/>
+        <p>Youtube Link: <input id="link" />
+          <input id="submitLink" type="button" value="Create Couch">
+        </form>
+      </div>
 
 
-  <div id="ytplayer">
-    <a href="javascript:void(0);" onclick="play();">Play</a>
+<div id="ytplayer">
+  <a href="javascript:void(0);" onclick="play();">Play</a>
 
-    <a href="javascript:void(0);" onclick="pause();">Pause</a>
+  <a href="javascript:void(0);" onclick="pause();">Pause</a>
 
-    <a href="javascript:void(0);" onclick="stop();">Stop</a>
+  <a href="javascript:void(0);" onclick="stop();">Stop</a>
 
-  </div>
+</div>
 
-  <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-  <script src="/public/javascripts/yt.js"></script>
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="/public/javascripts/yt.js"></script>
 </body>
 </html>

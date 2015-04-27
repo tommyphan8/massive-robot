@@ -5,11 +5,7 @@ var main = function () {
 	tag.src = "https://www.youtube.com/iframe_api";
 	var firstScriptTag = document.getElementsByTagName('script')[0];
 	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-		
-
-
-
+	
 
 };
 
@@ -19,7 +15,7 @@ function onYouTubeIframeAPIReady() {
 		height: '390',
 		width: '640',
 		playerVars: {
-			//controls: 0,
+			controls: 0,
 			disablekb: 1
 		},
 		//videoId: 'M7lc1UVf-VE',
