@@ -1,28 +1,48 @@
 <!DOCTYPE html>
 <html>
+<style>
+  .inactive { display: none; }
+  .active { display: block; }
+</style>
 <body>
   <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
-  <div id="player"></div>
+  <div id="username" class="inactive"> </div>
+  <div class="inactive" id="player"></div>
 
-  <div id="registration" class="active">
+  <div id="registration" class="inactive">
     <form>
-      <p>Username: </p><input id="name"/>
+      <p>Username: <input id="name"/>
         <p>Youtube Link: <input id="link" />
           <input id="submitLink" type="button" value="Create Couch">
         </form>
       </div>
 
+      <div id="joinReg" class="inactive">
+    <form>
+      <p>Username: <input id="name1"/>
+        
+          <input id="join" type="button" value="join">
+        </form>
+      </div>
 
-<div id="ytplayer">
-  <a href="javascript:void(0);" onclick="play();">Play</a>
+
+<div class="inactive" id="ytplayer">
+
+  <button id="play">Play</button>
+  <button id="pause">Pause</button>
+  <button id="stop">Stop</button>
+  <button id="leave">Leave</button>
+<!--   <a href="javascript:void(0);" onclick="play();">Play</a>
 
   <a href="javascript:void(0);" onclick="pause();">Pause</a>
 
-  <a href="javascript:void(0);" onclick="stop();">Stop</a>
+  <a href="javascript:void(0);" onclick="stop();">Stop</a> -->
 
 </div>
 
 <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 <script src="/public/javascripts/yt.js"></script>
+<script src="http://localhost:5555/socket.io/socket.io.js"></script>
+
 </body>
 </html>
