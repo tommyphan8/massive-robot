@@ -14,11 +14,8 @@ var main = function () {
         console.log(JSON.stringify(data));
         console.log('in client boadcast socket event pause received');
     });
-
-    //use to update json object containing currentSync
     socket.on('update rooms', function (rooms) {
         console.log('inside update rooms');
-        console.log(rooms);
         /*$('#rooms').empty();
         $.each(rooms , function (val,text){
             var newRoom = $('<div>').text(text);
@@ -52,8 +49,6 @@ var main = function () {
         }
         var exists = false;
         console.log('option values:'+$('#roomList option').val)
-
-        //check if room exists, return bool if exists
         $.each($('#roomList option'),function(){
             console.log('option values:'+this.value);
             if (this.value === roomName) {
@@ -65,12 +60,10 @@ var main = function () {
             alert('room Name:'+ roomName+' already exists');
             return; 
         }
-        //else we will add room to roomList along with leader and youtube id
         $('#roomList').append(
                 $('<option></option>').val(roomName).html(roomName)
             ); 
         $('#roomName').val('');
-        //emit to server the json object currentSync
         socket.emit('create room', roomName);
     });
     button =$('#joinBtn');
@@ -78,20 +71,15 @@ var main = function () {
         //socket.join(roomName);
         var selectedRoom = $('#roomList option:selected').val();
         console.log('selectedRoom:'+selectedRoom);
-        //error purposes
         if(selectedRoom===""){
             alert('select room Name');
             return;
         }
-        // else select current room and emit to server, add to user
-        //server will return update room object for other users in the current room
         $('#currentRoom').text(selectedRoom);
         $('#roomList').val('');
         socket.emit('join room', selectedRoom );
     });
-    //user press leave, 
     button =$('#leaveBtn');
-    //user leaves room update dserver side the user has left
     button.on("click", function(){
         //socket.leave(roomName);
         if($.trim($('#currentRoom').text()) === '')

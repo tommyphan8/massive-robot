@@ -26,12 +26,7 @@ var Video = mongoose.model("video", videoSchema);
 http.listen(5555, function(){
   console.log('listening on *:5555');
 });
-
-
-var currentSync = {"youtubeID": "", "leader": "", "users" : []};
 var rooms =[];
-
-
 io.on('connection', function (socket) {
     console.log("a user connected rooms:"+rooms);
     io.sockets.emit('update rooms', rooms);
