@@ -81,6 +81,11 @@ io.on('connection', function (socket) {
         socket.broadcast.in(socket.room).emit("request player state");
     });
 
+    socket.on('socketleave', function() {
+        console.log(socket.room);
+        socket.leave(socket.room);
+        socket.room = null;
+    });
     //if leader leaves room
     socket.on('leader leaves room', function (currentSync) {
         console.log("test: "+currentSync.room);
@@ -91,12 +96,14 @@ io.on('connection', function (socket) {
                 socket.broadcast.in(socket.room).emit('leader leaves room', rooms);
                 socket.broadcast.emit('update rooms',rooms);
                 socket.emit('update rooms',rooms);
-
-                io.socket.in(currentSync.room).leave(currentSync.room);
-                //console.log(io.sockets.clients(currentSync.room));
-                // io.sockets.clients(currentSync.room).forEach(function(s) {
+                socket.broadcast.in(socket.room).emit('socketleave');
+                //console.log(io.sockets.in(currentSync.room).leave(currentSync.room));
+                // io.sockets.clients(currentSync.room).forEach(function(s){
                 //     s.leave(currentSync.room);
                 // });
+                //io.sockets.in(currentSync.room).leave(currentSync.room);
+                //console.log(io.sockets.clients(currentSync.room));
+                
                 socket.leave(currentSync.room);
                 socket.room = null;
 

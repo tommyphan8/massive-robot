@@ -12,7 +12,10 @@ var main = function () {
 
     var playerState = {"currentTime" : "", "state": ""};
     
-
+    socket.on('socketleave', function() {
+        console.log("socketleave");
+        socket.emit('socketleave');
+    });
     socket.on('leader leaves room', function(data) {
         console.log("leader leaves");
         console.log(data);
