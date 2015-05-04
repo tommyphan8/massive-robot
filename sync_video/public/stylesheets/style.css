@@ -1,0 +1,23 @@
+body{
+	padding-top: 70px;
+}
+.inactive {
+    display: none;
+}
+.active {
+    display: block;
+}
+.navbar .navbar-default{
+	background-color:#7fffd4;
+}
+#legend{
+	display:inherit;
+}
+#leaveBtn{
+	color:#ffffff;
+	background-color:#df691a;
+	border-color:transparent;
+}
+#joinBtn{
+	float:right;
+}

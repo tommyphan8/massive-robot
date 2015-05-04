@@ -2,7 +2,7 @@ var main = function () {
     "use strict";
 
     //variable for user in current room
-    var currentSync = {"youtubeID": "", "leader": "", "users" : [], "room": ""};
+    var currentSync = {"youtubeID": "", "leader": "", "users" : [], "roomName": ""};
     var leader = "";
     var username = ""; 
     //current list of all rooms of type array
@@ -22,11 +22,13 @@ var main = function () {
 
         $("#player").attr('class', 'inactive');
         $("#leaveBtn").attr('class', 'inactive');
+        // $("#create-form").attr('class', 'active');
         $("#create").attr('class', 'active');
+        $("#main-panel").attr('class', 'inactive');
         $('#username').empty();
         $('#leader').empty();
         $('#room').empty();
-        currentSync = {"youtubeID": "", "leader": "", "users" : [], "room": ""};
+        currentSync = {"youtubeID": "", "leader": "", "users" : [], "roomName": ""};
 //             player.stopVideo();
         player.stopVideo();
         console.log(currentRooms);
@@ -79,9 +81,9 @@ var main = function () {
     });
     //use to update json object containing currentSync
     socket.on('update rooms', function (rooms) {
-        currentRooms = rooms;
-        console.log('inside update rooms');
-        console.log(currentRooms);
+        //currentRooms = rooms;
+        console.log('inside update rooms:'+rooms);
+        //console.log(currentRooms);
         /*$('#rooms').empty();
         $.each(rooms , function (val,text){
             var newRoom = $('<div>').text(text);
@@ -98,11 +100,12 @@ var main = function () {
                             val('').html('---select---'));
        $.each(rooms , function (val,text){
            $('#roomList').append(
-                $('<option></option>').val(text.room).html(text.room)
+                $('<option></option>').val(text.roomName).html(text.roomName)
             ); 
        });
     });
     // end Socket.io script
+
     var roomName;
     var button;
     var lookup; //used to search room id from array currentRooms
@@ -135,7 +138,7 @@ var main = function () {
                 $('<option></option>').val(roomName).html(roomName)
             ); 
         $('#roomName').val('');
-        currentSync.room = roomName;
+        currentSync.roomName = roomName;
         currentSync.youtubeID = $("#link").val();
         currentSync.leader = $("#name").val();
         leader = $("#name").val();
@@ -149,10 +152,10 @@ var main = function () {
         $("#username").text("Hello " + username);
         $("#leader").text("Leader: " + leader);
         $("#room").text("Room: " + currentSync.room);
-
+        $("#room-info").text("Room Info");
         
         $("#create").attr("class", "inactive");
-
+        $("#main-panel").attr("class", "active");
         $("#player").attr("class", "active");
         $("#leaveBtn").attr("class", "active");
         $("#ytplayer").attr("class", "active");
@@ -185,15 +188,16 @@ var main = function () {
             return;
         }
 
-        lookup = $.grep(currentRooms, function(e) { return e.room === selectedRoom});
-
-        $.each(lookup[0].users, function(index, value) {
-            if (value === $("#name").val()) {
-                exists = true;
-                return;
-            }
-        });
-
+        lookup = $.grep(rooms, function(e) { return e.roomName === selectedRoom});
+        console.log('lookup[0].users:'+lookup[0]);
+        if(lookup[0]){
+            $.each(lookup[0].users, function(index, value) {
+                if (value === $("#name").val()) {
+                    exists = true;
+                    return;
+                }
+            });
+        }
         if(exists){
             alert('Name: '+ $("#name").val() +' already exists');
             return; 
@@ -219,7 +223,7 @@ var main = function () {
 
         
         $("#create").attr("class", "inactive");
-
+        $("#main-panel").attr("class", "active");
         $("#player").attr("class", "active");
         $("#leaveBtn").attr("class", "active");
         $('#name').val('');
@@ -247,6 +251,7 @@ var main = function () {
             $("#player").attr('class', 'inactive');
             $("#ytplayer").attr('class', 'inactive');
             $("#leaveBtn").attr('class', 'inactive');
+            $("#main-panel").attr('class', 'inactive');
             $("#create").attr('class', 'active');
             $('#username').empty();
             $('#leader').empty();
@@ -264,6 +269,7 @@ var main = function () {
             if(currentSync.users[i] === username ) {
              $("#player").attr('class', 'inactive');
              $("#leaveBtn").attr('class', 'inactive');
+             $("#main-panel").attr('class', 'inactive');
              $("#create").attr('class', 'active');
              $('#username').empty();
              $('#leader').empty();
@@ -335,8 +341,10 @@ function onYouTubeIframeAPIReady() {
     height: '390',
     width: '640',
     playerVars: {
-        controls: 1,
-        disablekb: 1
+        controls: 0,
+        disablekb: 1,
+        autohide:1,
+        showinfo:0
     },
     //videoId: 'M7lc1UVf-VE',
         events: {
