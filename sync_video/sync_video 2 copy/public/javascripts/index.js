@@ -26,11 +26,11 @@ var main = function () {
         $('#username').empty();
         $('#leader').empty();
         $('#room').empty();
-
+        currentSync = {"youtubeID": "", "leader": "", "users" : [], "room": ""};
 //             player.stopVideo();
         player.stopVideo();
         console.log(currentRooms);
-        currentSync = "";
+//        currentSync = "";
 
     });
 
