@@ -96,7 +96,7 @@ io.on('connection', function (socket) {
                 socket.broadcast.in(socket.room).emit('leader leaves room', rooms);
                 socket.broadcast.emit('update rooms',rooms);
                 socket.emit('update rooms',rooms);
-                socket.broadcast.in(socket.room).emit('socketleave');
+                socket.broadcast.in(socket.room).emit('socketleave'); //leave all sockets from room
                 //console.log(io.sockets.in(currentSync.room).leave(currentSync.room));
                 // io.sockets.clients(currentSync.room).forEach(function(s){
                 //     s.leave(currentSync.room);

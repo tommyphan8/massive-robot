@@ -19,6 +19,15 @@ var main = function () {
     socket.on('leader leaves room', function(data) {
         console.log("leader leaves");
         console.log(data);
+
+        $("#player").attr('class', 'inactive');
+        $("#leaveBtn").attr('class', 'inactive');
+        $("#create").attr('class', 'active');
+        $('#username').empty();
+        $('#leader').empty();
+        $('#room').empty();
+
+//             player.stopVideo();
         player.stopVideo();
         console.log(currentRooms);
         currentSync = "";
@@ -136,6 +145,23 @@ var main = function () {
         currentSync.users.push($("#name").val());
         username = $("#name").val();
         player.cueVideoById($("#link").val());
+        
+        $("#username").text("Hello " + username);
+        $("#leader").text("Leader: " + leader);
+        $("#room").text("Room: " + currentSync.room);
+
+        
+        $("#create").attr("class", "inactive");
+
+        $("#player").attr("class", "active");
+        $("#leaveBtn").attr("class", "active");
+        $("#ytplayer").attr("class", "active");
+
+        $("#name").val("");
+        $("#link").val("");
+        
+
+
         console.log(currentSync);
         //emit to server the json object currentSync
         socket.emit('create room', currentSync);
@@ -150,6 +176,10 @@ var main = function () {
         var selectedRoom = $('#roomList option:selected').val();
         console.log('selectedRoom:'+selectedRoom);
         //error purposes
+        if(username != "") {
+            alert('leave room first');
+            return;
+        }
         if(selectedRoom===""){
             alert('select room Name');
             return;
@@ -172,14 +202,28 @@ var main = function () {
 
         // else select current room and emit to server, add to user
         //server will return update room object for other users in the current room
-        $('#currentRoom').text(selectedRoom);
+        //$('#currentRoom').text(selectedRoom);
         $('#roomList').val('');
+       
 
         player.cueVideoById(lookup[0].youtubeID);
         lookup[0].users.push($("#name").val());
+        console.log('username' + $('#name').val());
         username = $("#name").val();
         console.log(lookup[0]);
         currentSync = lookup[0];
+        console.log("hello " + username);
+        $("#username").text("Hello " + username);
+        $("#leader").text("Leader: " + currentSync.leader);
+        $("#room").text("Room: " + currentSync.room);
+
+        
+        $("#create").attr("class", "inactive");
+
+        $("#player").attr("class", "active");
+        $("#leaveBtn").attr("class", "active");
+        $('#name').val('');
+        //$("#ytplayer").attr("class", "active");
         //currentSync.users.push($("#name").val());
         var temp = lookup[0];
         console.log(currentRooms);
@@ -200,32 +244,36 @@ var main = function () {
         
         console.log("leaders" + leader + currentSync.leader);
         if(leader === currentSync.leader) {
+            $("#player").attr('class', 'inactive');
+            $("#ytplayer").attr('class', 'inactive');
+            $("#leaveBtn").attr('class', 'inactive');
+            $("#create").attr('class', 'active');
+            $('#username').empty();
+            $('#leader').empty();
+            $('#room').empty();
+            player.stopVideo();
+
             leader = "";
             username = "";
             socket.emit('leader leaves room', currentSync);
             currentSync = {"youtubeID": "", "leader": "", "users" : [], "room": ""};
             
-
-
-            // for (var i = 0; i < currentRooms.length; i++) {
-
-            //     if(currentRooms[0].room === currentSync.room) {
-            //         currentRooms.splice(i, 1);
-            //         leader = "";
-            //         username = "";
-            //         socket.emit('leader leaves room', currentSync)
-            //         currentSync = "";
-            //         break;
-            //     }
-            //}
         } else {
            for (var i = 0; i < currentSync.users.length; i++) {
 
             if(currentSync.users[i] === username ) {
-                console.log("found");
-                currentSync.users.splice(i, 1);
-                username = "";
-                break;
+             $("#player").attr('class', 'inactive');
+             $("#leaveBtn").attr('class', 'inactive');
+             $("#create").attr('class', 'active');
+             $('#username').empty();
+             $('#leader').empty();
+             $('#room').empty();
+
+             player.stopVideo();
+             console.log("found");
+             currentSync.users.splice(i, 1);
+             username = "";
+             break;
             }
         }
         

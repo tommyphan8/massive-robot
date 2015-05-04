@@ -16,13 +16,21 @@
 
 
   <main>
-      <div class="active" id="player"></div>
+      <div class="inactive" id="player"></div>
 
+      <div>
+        <p id="username"> </p>
+        <p id="leader"> </p>
+        <P id="room"> </p>
+        <button class="inactive" id="leaveBtn"> leave </button>
+      </div>
 
-    <p>Username: <input id="name"/>
-     <p>Youtube Id: <input id="link" />
-    <p>Create Couch: <input id='roomName' />
-    <button id="createBtn" > create  </button>
+      <div id="create" class="active">  
+        <p>Username: <input id="name"/>
+         <p>Youtube Id: <input id="link"/>
+          <p>Create Couch: <input id='roomName'/>
+            <button id="createBtn" > create  </button>
+          </div>
     <hr>
     <span>Room List</span>
     <select id='roomList' multiple>
@@ -30,13 +38,13 @@
     </select>
     <button id="joinBtn" > join  </button>
 
-    <hr>
-    <span id='currentRoom'></span>
-    <button id="leaveBtn" > leave </button>
+    
+    <!-- <span id='currentRoom'></span>
+    <button id="leaveBtn" > leave </button> -->
     <hr>
 
 
-    <div class="active" id="ytplayer">
+    <div class="inactive" id="ytplayer">
       <button id="startBtn" > start </button>
       <button id="pauseBtn" > pause </button>
     </div>
