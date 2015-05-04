@@ -46,6 +46,10 @@ io.on('connection', function (socket) {
         socket.broadcast.emit('update rooms', rooms);
     });
 
+    socket.on("request player state", function (data) {
+        socket.broadcast.in(socket.room).emit("send player state", data);
+    });
+
     // join to room and save the room name
     socket.on('join room', function (data) {
         //socket.set('room', room, function() { 
@@ -58,14 +62,23 @@ io.on('connection', function (socket) {
         socket.room = room;
 
   
-        console.log($.inArray(data, rooms));
-        //lookup = $.grep(rooms, function(e) { return e.room === room});
-        //console.log(lookup);
-        //lookup = data;
-        //socket.broadcast.emit('update rooms', rooms);
+        var index = -1
+        var len = rooms.length;
+        for (var i = 0; i < len; i++) {
+            if(rooms[i].room === room) {
+                index = i;
+                break;
+            }
+        }
+        rooms[index] = data;
+       
+        //updates user not in room with new room array
+        socket.broadcast.emit('update rooms', rooms);
 
+        //update currentsync of people in same room
+        socket.broadcast.in(socket.room).emit("update currentSync", data);
 
-        //socket.broadcast.in(socket.room).emit("testing", "testing");
+        socket.broadcast.in(socket.room).emit("request player state");
     });
     // leave  room 
     socket.on('leave room', function (room) {

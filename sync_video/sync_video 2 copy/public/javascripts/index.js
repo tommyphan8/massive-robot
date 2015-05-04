@@ -3,19 +3,41 @@ var main = function () {
 
     //variable for user in current room
     var currentSync = {"youtubeID": "", "leader": "", "users" : [], "room": ""};
-
+    var leader = "";
     //current list of all rooms of type array
     var currentRooms;
 
     var socket = io();
 
-    socket.on('testing', function(data) {
-        console.log(data);
+    var playerState = {"currentTime" : "", "state": ""};
+    
+    //leader will send currentstate along with currenttime
+    socket.on('request player state', function() {
+        console.log("leader");
+        if (leader === currentSync.leader) {
+            playerState.currentTime = player.getCurrentTime();
+            playerState.state = player.getPlayerState();
+            socket.emit("request player state", playerState);
+        } 
+        
+    });
+
+    //when a user receives a player state, it will check if they are playing
+    //if they are not playing, player will seek to leader and play
+    socket.on('send player state', function(data) {
+        console.log("send player state");
+        if (data.state === 1 && player.getPlayerState() != 1) {
+            console.log("state" + data);
+            player.seekTo((data.currentTime + 1.5));
+            player.playVideo();
+        }
     });
 
     socket.on('broadcast start', function(data){
         console.log(JSON.stringify(data));
         console.log('in client boadcast socket event start received');
+        player.seekTo(data);
+        player.playVideo();
     });
     socket.on('broadcast stop', function(data){
         console.log(JSON.stringify(data));
@@ -24,8 +46,13 @@ var main = function () {
     socket.on('broadcast pause', function(data){
         console.log(JSON.stringify(data));
         console.log('in client boadcast socket event pause received');
+        player.pauseVideo();
+        //player.seekTo(data);
     });
-
+    socket.on('update currentSync', function(data) {
+        currentSync = data;
+        console.log("works" + currentSync);
+    });
     //use to update json object containing currentSync
     socket.on('update rooms', function (rooms) {
         currentRooms = rooms;
@@ -87,6 +114,7 @@ var main = function () {
         currentSync.room = roomName;
         currentSync.youtubeID = $("#link").val();
         currentSync.leader = $("#name").val();
+        leader = $("#name").val();
         //clear list of users for new room
         currentSync.users = [];
         currentSync.users.push($("#name").val());
@@ -132,12 +160,15 @@ var main = function () {
 
         player.cueVideoById(lookup[0].youtubeID);
         lookup[0].users.push($("#name").val());
+        currentSync.users.push($("#name").val());
         var temp = lookup[0];
         console.log(currentRooms);
         //console.log(lookup[0]);
 
         socket.emit('join room', temp);
     });
+
+
     //user press leave, 
     button =$('#leaveBtn');
     //user leaves room update dserver side the user has left
@@ -148,6 +179,20 @@ var main = function () {
         $('#currentRoom').text('');
         socket.emit('leave room', $('#currentRoom').text() );
     });
+
+    $("#startBtn").click(function() {
+        console.log("play");
+        player.playVideo();
+        socket.emit("start", player.getCurrentTime());
+    });
+
+    $("#pauseBtn").click(function() {
+        player.pauseVideo();
+        socket.emit("pause", player.getCurrentTime());
+
+    });
+
+    /*
     button =$('#startBtn');
     button.on("click", function () {
         if($.trim($('#currentRoom').text()) === ''){
@@ -165,7 +210,7 @@ var main = function () {
     button =$('#pauseBtn');
     button.on("click", function () {
             socket.emit('pause', {time:0});
-    });
+    });*/
 };
 
 
