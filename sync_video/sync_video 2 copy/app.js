@@ -80,12 +80,45 @@ io.on('connection', function (socket) {
 
         socket.broadcast.in(socket.room).emit("request player state");
     });
+
+    //if leader leaves room
+    socket.on('leader leaves room', function (currentSync) {
+        console.log("test: "+currentSync.room);
+        for ( var i = 0; i< rooms.length; i++) {
+            if(rooms[i].room === currentSync.room) {
+                console.log("2");
+                rooms.splice(i, 1); //removes current room from object
+                socket.broadcast.in(socket.room).emit('leader leaves room', rooms);
+                socket.broadcast.emit('update rooms',rooms);
+                socket.emit('update rooms',rooms);
+
+                io.socket.in(currentSync.room).leave(currentSync.room);
+                //console.log(io.sockets.clients(currentSync.room));
+                // io.sockets.clients(currentSync.room).forEach(function(s) {
+                //     s.leave(currentSync.room);
+                // });
+                socket.leave(currentSync.room);
+                socket.room = null;
+
+
+                break;
+            }
+        }
+    });
     // leave  room 
-    socket.on('leave room', function (room) {
-        console.log("leave room:"+room);
-        socket.leave(room);
+    socket.on('leave room', function (currentSync) {
+        for ( var i = 0; i< rooms.length; i++) {
+            if(rooms[i].room === currentSync.room) {
+                rooms[i] = currentSync;
+                break;
+            }
+        }
+        socket.broadcast.emit('update rooms', rooms);
+        socket.broadcast.in(socket.room).emit("update currentSync", currentSync);
+        console.log("leave room:"+ currentSync.room);
+        socket.leave(currentSync.room);
         socket.room = null;
-    })
+    });
 
     socket.on('start', function (data) {
         console.log('in server socket event start');

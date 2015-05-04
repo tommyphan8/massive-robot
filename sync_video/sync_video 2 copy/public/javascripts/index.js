@@ -4,6 +4,7 @@ var main = function () {
     //variable for user in current room
     var currentSync = {"youtubeID": "", "leader": "", "users" : [], "room": ""};
     var leader = "";
+    var username = ""; 
     //current list of all rooms of type array
     var currentRooms;
 
@@ -11,6 +12,17 @@ var main = function () {
 
     var playerState = {"currentTime" : "", "state": ""};
     
+
+    socket.on('leader leaves room', function(data) {
+        console.log("leader leaves");
+        console.log(data);
+        player.stopVideo();
+        console.log(currentRooms);
+        currentSync = "";
+
+    });
+
+
     //leader will send currentstate along with currenttime
     socket.on('request player state', function() {
         console.log("leader");
@@ -115,9 +127,11 @@ var main = function () {
         currentSync.youtubeID = $("#link").val();
         currentSync.leader = $("#name").val();
         leader = $("#name").val();
+        username = $("#name").val();
         //clear list of users for new room
         currentSync.users = [];
         currentSync.users.push($("#name").val());
+        username = $("#name").val();
         player.cueVideoById($("#link").val());
         console.log(currentSync);
         //emit to server the json object currentSync
@@ -160,7 +174,10 @@ var main = function () {
 
         player.cueVideoById(lookup[0].youtubeID);
         lookup[0].users.push($("#name").val());
-        currentSync.users.push($("#name").val());
+        username = $("#name").val();
+        console.log(lookup[0]);
+        currentSync = lookup[0];
+        //currentSync.users.push($("#name").val());
         var temp = lookup[0];
         console.log(currentRooms);
         //console.log(lookup[0]);
@@ -174,10 +191,49 @@ var main = function () {
     //user leaves room update dserver side the user has left
     button.on("click", function(){
         //socket.leave(roomName);
-        if($.trim($('#currentRoom').text()) === '')
-            return;
+        // if($.trim($('#currentRoom').text()) === '')
+        //     return;
         $('#currentRoom').text('');
-        socket.emit('leave room', $('#currentRoom').text() );
+        
+        console.log("leaders" + leader + currentSync.leader);
+        if(leader === currentSync.leader) {
+            leader = "";
+            username = "";
+            socket.emit('leader leaves room', currentSync);
+            currentSync = {"youtubeID": "", "leader": "", "users" : [], "room": ""};
+            
+
+
+            // for (var i = 0; i < currentRooms.length; i++) {
+
+            //     if(currentRooms[0].room === currentSync.room) {
+            //         currentRooms.splice(i, 1);
+            //         leader = "";
+            //         username = "";
+            //         socket.emit('leader leaves room', currentSync)
+            //         currentSync = "";
+            //         break;
+            //     }
+            //}
+        } else {
+           for (var i = 0; i < currentSync.users.length; i++) {
+
+            if(currentSync.users[i] === username ) {
+                console.log("found");
+                currentSync.users.splice(i, 1);
+                username = "";
+                break;
+            }
+        }
+        
+        lookup = $.grep(currentRooms, function(e) { return e.room === currentSync.room});
+        lookup[0] = currentSync;
+        socket.emit('leave room', currentSync );
+
+        }
+
+        //removes user from currentSync, will emit to server
+       
     });
 
     $("#startBtn").click(function() {
