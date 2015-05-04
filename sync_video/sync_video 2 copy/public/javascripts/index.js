@@ -1,6 +1,17 @@
 var main = function () {
     "use strict";
+
+    //variable for user in current room
+    var currentSync = {"youtubeID": "", "leader": "", "users" : [], "room": ""};
+
+    //current list of all rooms of type array
+    var currentRooms;
+
     var socket = io();
+
+    socket.on('testing', function(data) {
+        console.log(data);
+    });
 
     socket.on('broadcast start', function(data){
         console.log(JSON.stringify(data));
@@ -17,8 +28,9 @@ var main = function () {
 
     //use to update json object containing currentSync
     socket.on('update rooms', function (rooms) {
+        currentRooms = rooms;
         console.log('inside update rooms');
-        console.log(rooms);
+        console.log(currentRooms);
         /*$('#rooms').empty();
         $.each(rooms , function (val,text){
             var newRoom = $('<div>').text(text);
@@ -35,13 +47,15 @@ var main = function () {
                             val('').html('---select---'));
        $.each(rooms , function (val,text){
            $('#roomList').append(
-                $('<option></option>').val(text).html(text)
+                $('<option></option>').val(text.room).html(text.room)
             ); 
        });
     });
     // end Socket.io script
     var roomName;
     var button;
+    var lookup; //used to search room id from array currentRooms
+    //on click off create button
     button =$('#createBtn');
     button.on("click", function(){
         //socket.join(roomName);
@@ -70,11 +84,23 @@ var main = function () {
                 $('<option></option>').val(roomName).html(roomName)
             ); 
         $('#roomName').val('');
+        currentSync.room = roomName;
+        currentSync.youtubeID = $("#link").val();
+        currentSync.leader = $("#name").val();
+        //clear list of users for new room
+        currentSync.users = [];
+        currentSync.users.push($("#name").val());
+        player.cueVideoById($("#link").val());
+        console.log(currentSync);
         //emit to server the json object currentSync
-        socket.emit('create room', roomName);
+        socket.emit('create room', currentSync);
     });
+
+    //user press join
     button =$('#joinBtn');
     button.on("click", function(){
+        var exists = false;
+
         //socket.join(roomName);
         var selectedRoom = $('#roomList option:selected').val();
         console.log('selectedRoom:'+selectedRoom);
@@ -83,11 +109,34 @@ var main = function () {
             alert('select room Name');
             return;
         }
+
+        lookup = $.grep(currentRooms, function(e) { return e.room === selectedRoom});
+
+        $.each(lookup[0].users, function(index, value) {
+            if (value === $("#name").val()) {
+                exists = true;
+                return;
+            }
+        });
+
+        if(exists){
+            alert('Name: '+ $("#name").val() +' already exists');
+            return; 
+        }
+
+
         // else select current room and emit to server, add to user
         //server will return update room object for other users in the current room
         $('#currentRoom').text(selectedRoom);
         $('#roomList').val('');
-        socket.emit('join room', selectedRoom );
+
+        player.cueVideoById(lookup[0].youtubeID);
+        lookup[0].users.push($("#name").val());
+        var temp = lookup[0];
+        console.log(currentRooms);
+        //console.log(lookup[0]);
+
+        socket.emit('join room', temp);
     });
     //user press leave, 
     button =$('#leaveBtn');
@@ -118,6 +167,34 @@ var main = function () {
             socket.emit('pause', {time:0});
     });
 };
+
+
+//loads YOUTUBE API
+var tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+
+//CREATES and Initializes Player
+var player;
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+    height: '390',
+    width: '640',
+    playerVars: {
+        controls: 1,
+        disablekb: 1
+    },
+    //videoId: 'M7lc1UVf-VE',
+        events: {
+        //'onReady': onPlayerReady,
+        //  'onStateChange': onPlayerStateChange
+     }
+    });
+        //console.log(player);
+
+}
 
 $(document).ready(function () {
     main();

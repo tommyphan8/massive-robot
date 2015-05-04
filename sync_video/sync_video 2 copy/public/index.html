@@ -1,47 +1,61 @@
 <!doctype html>
 <html>
-  <head>
-    <title>sync video!</title>
-    <link href="/public/stylesheets/style.css" rel="stylesheet" type="text/css">
-  </head>
+<style>
+  .inactive { display: none; }
+  .active { display: block; }
+</style>
+<head>
+  <title>sync video!</title>
+  <link href="/public/stylesheets/style.css" rel="stylesheet" type="text/css">
+</head>
 
-  <body>
-    <header>
-      
-    </header>
+<body>
+  <header>
+
+  </header>
 
 
-    <main>
-      <input id='roomName' />
-      <button id="createBtn" > create  </button>
-      <hr>
-      <span>Room List</span>
-      <select id='roomList' multiple>
-        <option id=''>---select---</option>
-      </select>
-      <button id="joinBtn" > join  </button>
+  <main>
+      <div class="active" id="player"></div>
 
-      <hr>
-      <span id='currentRoom'></span>
-      <button id="leaveBtn" > leave </button>
-      <hr>
+
+    <p>Username: <input id="name"/>
+     <p>Youtube Id: <input id="link" />
+    <p>Create Couch: <input id='roomName' />
+    <button id="createBtn" > create  </button>
+    <hr>
+    <span>Room List</span>
+    <select id='roomList' multiple>
+      <option id=''>---select---</option>
+    </select>
+    <button id="joinBtn" > join  </button>
+
+    <hr>
+    <span id='currentRoom'></span>
+    <button id="leaveBtn" > leave </button>
+    <hr>
+
+
+    <div class="inactive" id="ytplayer">
       <button id="startBtn" > start </button>
       <button id="stopBtn" > stop </button>
       <button id="pauseBtn" > pause </button>
+    </div>
+
      <!-- <button id="forwardBtn" > forward </button>
-      <button id="rewindBtn" > rewind </button>-->
-    </main>
+     <button id="rewindBtn" > rewind </button>-->
+   </main>
 
-    <footer>
-      <div id='rooms'></div>
-      
-    </footer>
+   <footer>
+    <div id='rooms'></div>
 
-    <script src="/public/javascripts/jquery-2.0.3.min.js"></script>
-    <!--socket.io-->
-    <script src="/socket.io/socket.io.js"></script>
+  </footer>
 
-    <script src="/public/javascripts/index.js"></script>
+  <script src="/public/javascripts/jquery-2.0.3.min.js"></script>
+  <!--socket.io-->
+  <script src="/socket.io/socket.io.js"></script>
 
-  </body>
+  <script src="/public/javascripts/index.js"></script>
+
+</body>
 </html>

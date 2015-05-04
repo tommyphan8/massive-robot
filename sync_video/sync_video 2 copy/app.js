@@ -2,7 +2,8 @@ var express = require("express"),
 	app = express(),
     http = require('http').Server(app),
     io = require('socket.io')(http),
-    mongoose = require("mongoose");
+    mongoose = require("mongoose"),
+    $ = require('jquery');
 
 app.use("/public",express.static(__dirname + "/public"));
 //app.use(express.bodyParser());
@@ -28,7 +29,7 @@ http.listen(5555, function(){
 });
 
 
-var currentSync = {"youtubeID": "", "leader": "", "users" : []};
+var currentSync = {"youtubeID": "", "leader": "", "users" : [], "room": ""};
 var rooms =[];
 
 
@@ -36,21 +37,35 @@ io.on('connection', function (socket) {
     console.log("a user connected rooms:"+rooms);
     io.sockets.emit('update rooms', rooms);
 
-    socket.on('create room', function(room) {
-        rooms.push(room);
-        console.log('create room:'+room);
+    socket.on('create room', function(current) {
+        rooms.push(current);
+        console.log('create room: '+ current.room);
+        //console.log('list of rooms: ' + rooms[0].youtubeID);
+        socket.join(current.room);
+        socket.room = current.room;
         socket.broadcast.emit('update rooms', rooms);
     });
 
     // join to room and save the room name
-    socket.on('join room', function (room) {
+    socket.on('join room', function (data) {
         //socket.set('room', room, function() { 
           //  console.log('room ' + room + ' saved'); 
         //});
+        var room = data.room;
         console.log("join room:"+room);
         //socket.set('room', room, function() { console.log('room ' + room + ' saved'); } );
         socket.join(room);
         socket.room = room;
+
+  
+        console.log($.inArray(data, rooms));
+        //lookup = $.grep(rooms, function(e) { return e.room === room});
+        //console.log(lookup);
+        //lookup = data;
+        //socket.broadcast.emit('update rooms', rooms);
+
+
+        //socket.broadcast.in(socket.room).emit("testing", "testing");
     });
     // leave  room 
     socket.on('leave room', function (room) {
