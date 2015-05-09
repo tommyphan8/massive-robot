@@ -355,7 +355,7 @@ io.on('connection', function (socket) {
 
 //display action happen for video
 app.get("/videoActions.json", function (req, res) {
-    Video.findOne(function (err, result) {
+    Video.find(function (err, result) {
 	   res.json(result);
     });
 });

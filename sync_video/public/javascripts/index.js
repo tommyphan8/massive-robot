@@ -157,11 +157,7 @@ var main = function () {
             currentSync.youtubeID = $("#link").val();
             currentSync.leader = $("#name").val();
             currentSync.user = $("#name").val();
-            
-            //not needed since we have leader already
-            // currentSync.users = [];
-            // currentSync.users.push($("#name").val());
-
+          
             //DOM manipulation
             leader = $("#name").val();
             username = $("#name").val();
@@ -169,7 +165,6 @@ var main = function () {
             $("#leader").text("Leader: " + leader);
             $("#room").text("Room: " + currentSync.roomName);
             $("#room-info").text("Room Info");
-
 
             //load player with video ID for API purposes
             player.cueVideoById($("#link").val());
@@ -201,6 +196,10 @@ var main = function () {
         var selectedRoom = $('#roomList option:selected').val();
         console.log('selectedRoom:'+selectedRoom);
         //error purposes
+        if (selectedRoom === undefined) {
+            alert('select a room to join');
+            return;
+        }
         if(username != "") {
             alert('leave room first');
             return;
@@ -228,33 +227,35 @@ var main = function () {
             alert('Name: '+ $("#name").val() +' already exists');
             return; 
         } else {
-                 // else select current room and emit to server, add to user
-        //server will return update room object for other users in the current room
-        //$('#currentRoom').text(selectedRoom);
-        //$('#roomList').val('');
-        username = $("#name").val();
-        player.cueVideoById(lookup[0].youtubeID);
-        lookup[0].users.push($("#name").val());
+            username = $("#name").val();
+            if(lookup[0].leader === username) {
+                alert('cannot use the same name as leader of the room');
+                return;
+            } else  {
+               player.cueVideoById(lookup[0].youtubeID);
+               lookup[0].users.push($("#name").val());
 
-        currentSync = lookup[0];
-        currentSync.user = $('#name').val();
-        
-        console.log('username' + $('#name').val());
-        console.log(lookup[0]);
-        console.log("hello " + username);
-        
-        $("#username").text("Hello " + username);
-        $("#leader").text("Leader: " + currentSync.leader);
-        $("#room").text("Room: " + currentSync.roomName);
-        
-        $("#create").attr("class", "inactive");
-        $("#main-panel").attr("class", "active");
-        $("#player").attr("class", "active");
-        $("#leaveBtn").attr("class", "active");
-        $('#name').val('');
+               currentSync = lookup[0];
+               currentSync.user = $('#name').val();
 
-        socket.emit('join room', currentSync);
+               console.log('username' + $('#name').val());
+               console.log(lookup[0]);
+               console.log("hello " + username);
 
+               $("#username").text("Hello " + username);
+               $("#leader").text("Leader: " + currentSync.leader);
+               $("#room").text("Room: " + currentSync.roomName);
+
+               $("#create").attr("class", "inactive");
+               $("#main-panel").attr("class", "active");
+               $("#player").attr("class", "active");
+               $("#leaveBtn").attr("class", "active");
+               $('#name').val('');
+
+               socket.emit('join room', currentSync);
+
+            }
+       
         }
 
 
@@ -266,11 +267,7 @@ var main = function () {
     button =$('#leaveBtn');
     //user leaves room update dserver side the user has left
     button.on("click", function(){
-        //socket.leave(roomName);
-        // if($.trim($('#currentRoom').text()) === '')
-        //     return;
-        //$('#currentRoom').text('');
-        
+
         console.log("leaders" + leader + currentSync.leader);
         if(leader === currentSync.leader) {
             $("#player").attr('class', 'inactive');
@@ -286,7 +283,7 @@ var main = function () {
             leader = "";
             username = "";
             socket.emit('leader leaves room', currentSync);
-            //currentSync = {"youtubeID": "", "leader": "", "users" : [], "roomName": "", "user": ""};
+            currentSync = {"youtubeID": "", "leader": "", "users" : [], "roomName": "", "user": ""};
             
         } else {
             player.stopVideo();
@@ -306,7 +303,6 @@ var main = function () {
 
         }
 
-        //removes user from currentSync, will emit to server
        
     });
 
