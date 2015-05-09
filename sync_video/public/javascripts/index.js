@@ -77,10 +77,6 @@ var main = function () {
         player.seekTo(data);
         player.playVideo();
     });
-    socket.on('broadcast stop', function(data){
-        console.log(JSON.stringify(data));
-        console.log('in client boadcast socket event stop received');
-    });
     socket.on('broadcast pause', function(data){
         console.log(JSON.stringify(data));
         console.log('in client boadcast socket event pause received');
