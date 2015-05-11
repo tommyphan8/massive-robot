@@ -339,14 +339,14 @@ io.on('connection', function (socket) {
     socket.on('stop', function (data) {
         console.log('in server socket event stop');
         // save stop action in database
-        console.log("b4 broadcast stop emit")
+        console.log("b4 broadcast stop emit");
         socket.broadcast.in(socket.roomName).emit('broadcast stop', data);
     });
 
     socket.on('pause', function (data) {
         console.log('in server socket event pause');
         // save pause action in database
-        console.log("b4 broadcast pause emit")
+        console.log("b4 broadcast pause emit");
         socket.broadcast.in(socket.roomName).emit('broadcast pause', data);
     });
   

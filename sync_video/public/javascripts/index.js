@@ -134,7 +134,7 @@ var main = function () {
             return;
         }
         var exists = false;
-        console.log('option values:'+$('#roomList option').val)
+        console.log('option values:'+$('#roomList option').val);
 
         //check if room exists, return bool if exists
         $.each($('#roomList option'),function(){
@@ -200,7 +200,7 @@ var main = function () {
             alert('select a room to join');
             return;
         }
-        if(username != "") {
+        if(username !== "") {
             alert('leave room first');
             return;
         }
@@ -213,7 +213,7 @@ var main = function () {
             return;
         }
 
-        lookup = $.grep(rooms, function(e) { return e.roomName === selectedRoom});
+        lookup = $.grep(rooms, function(e) { return e.roomName === selectedRoom;});
         console.log('lookup[0].users:'+lookup[0]);
         if(lookup[0]){
             $.each(lookup[0].users, function(index, value) {
@@ -357,7 +357,7 @@ function onPlayerReady(event) {
 
     
     window.setInterval(function () {
-        if(currentSync.leader === username && leader != '') {
+        if(currentSync.leader === username && leader !== '') {
             
             if (player.getPlayerState() === 1) {
 
