@@ -1,4 +1,4 @@
-The concept for our project was to create a web application that allows one user to control a video and broadcast it to other users that are in the same virtual room. A leader can create a room and control a YouTube video remotely. If there is a reason to pause the video, the leader can do so and that pause action will be emitted to all viewers of the video in real-time causing their videos to pause.
+The concept for our project was to create a web application that allows one user to control a video and broadcast it to other users that are in the same virtual room. A leader can create a room and control a YouTube video remotely. If there is a reason to pause, fast forward, or rewind the video, the leader can do so and that action will be emitted to all viewers of the video in real-time causing their videos to pause.  
 
 This web application uses the following software and API:
 
@@ -6,6 +6,7 @@ Node
 Express
 Socket.io
 MongoDB
+Mongoose
 YouTube Player API ( https://developers.google.com/youtube/iframe_api_reference)
 
 In order to use the application:
@@ -60,30 +61,6 @@ This will show a history of all the users, rooms, and actions.
 *** Please Note ***
 
 This web application does not work in all Firefox browsers. We have seen it work in some instances of Firefox and not in others. This is a bug that we are aware of and are still unsure of how to fix.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
